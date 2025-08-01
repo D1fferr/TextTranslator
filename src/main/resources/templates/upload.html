@@ -1,0 +1,33 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Files</title>
+</head>
+<body>
+<h1>Upload Translation Files</h1>
+<form method="post" action="/upload" enctype="multipart/form-data" onsubmit="return validateFiles()">
+    <input type="file" name="originalFile" id="originalFile" accept=".txt">
+    <input type="file" name="translatedFile" id="translatedFile" accept=".txt">
+    <button type="submit">Upload</button>
+</form>
+
+<script>
+    function validateFiles() {
+        const originalFile = document.getElementById('originalFile').files[0];
+        const translatedFile = document.getElementById('translatedFile').files[0];
+
+        if (!originalFile || !translatedFile) {
+            alert('Будь ласка, виберіть обидва файли');
+            return false;
+        }
+
+        if (originalFile.size === 0 || translatedFile.size === 0) {
+            alert('Файли не повинні бути порожніми');
+            return false;
+        }
+
+        return true;
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Перегляд тексту</title>
+    <style>
+        .sentence {
+            cursor: pointer;
+            margin: 8px 0;
+            padding: 5px;
+            border-bottom: 1px solid #eee;
+        }
+        .pagination {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .pagination a {
+            margin: 0 5px;
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            text-decoration: none;
+        }
+        .current-page {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<!-- Відображення речень -->
+<div th:each="sentence : ${sentences}">
+    <div class="sentence"
+         th:text="${sentence}"
+         th:data-translation="${sentenceMap.get(sentence)}"
+         onclick="showTranslation(this.getAttribute('data-translation'))">
+    </div>
+</div>
+
+<!-- Пагінація -->
+<div class="pagination" th:if="${totalPages > 1}">
+    <!-- Кнопка "Назад" -->
+    <a th:if="${currentPage > 0}"
+       th:href="@{/view(page=${currentPage - 1})}">← Назад</a>
+
+    <!-- Номери сторінок -->
+    <span th:each="i : ${#numbers.sequence(
+            T(java.lang.Math).max(0, currentPage - 2),
+            T(java.lang.Math).min(currentPage + 2, totalPages - 1))}">
+            <a th:href="@{/view(page=${i})}"
+               th:text="${i + 1}"
+               th:classappend="${i == currentPage} ? 'current-page' : ''">
+            </a>
+        </span>
+
+    <!-- Кнопка "Вперед" -->
+    <a th:if="${currentPage lt totalPages - 1}"
+       th:href="@{/view(page=${currentPage + 1})}">Вперед →</a>
+</div>
+
+<script>
+    function showTranslation(translation) {
+        if (translation) {
+            alert(translation);
+        }
+    }
+</script>
+</body>
+</html>
