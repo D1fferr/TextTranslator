@@ -1,28 +1,168 @@
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Upload Files</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Translator | Upload</title>
+    <style>
+        :root {
+            --primary-color: #FFD700; /* Теплий золотистий */
+            --bg-color: #FAFAFA;     /* Дуже світлий сірий */
+            --text-color: #333333;   /* Темно-сірий */
+            --border-color: #E0E0E0; /* Світла рамка */
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        h1 {
+            font-weight: 600;
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: var(--text-color);
+        }
+
+        .upload-area {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+        }
+
+        .file-input-label {
+            display: block;
+            padding: 1.5rem;
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .file-input-label:hover {
+            border-color: var(--primary-color);
+        }
+
+        .file-input-label span {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .file-input-label small {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        input[type="file"] {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        button[type="submit"] {
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            border: none;
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            width: 100%;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #FFC600;
+        }
+
+        .file-name {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: #666;
+            display: none;
+        }
+    </style>
 </head>
 <body>
-<h1>Upload Translation Files</h1>
-<form method="post" action="/upload" enctype="multipart/form-data" onsubmit="return validateFiles()">
-    <input type="file" name="originalFile" id="originalFile" accept=".txt">
-    <input type="file" name="translatedFile" id="translatedFile" accept=".txt">
-    <button type="submit">Upload</button>
-</form>
+<div class="container">
+    <h1>Upload Translation Files</h1>
+
+    <form method="post" action="/upload" enctype="multipart/form-data" class="upload-area" onsubmit="return validateFiles()">
+        <div class="file-input-wrapper">
+            <label for="originalFile" class="file-input-label">
+                <span>Original Text File</span>
+                <small>Click to select .txt file</small>
+                <div id="originalFileName" class="file-name"></div>
+            </label>
+            <input type="file" name="originalFile" id="originalFile" accept=".txt" onchange="showFileName(this, 'originalFileName')">
+        </div>
+
+        <div class="file-input-wrapper">
+            <label for="translatedFile" class="file-input-label">
+                <span>Translated Text File</span>
+                <small>Click to select .txt file</small>
+                <div id="translatedFileName" class="file-name"></div>
+            </label>
+            <input type="file" name="translatedFile" id="translatedFile" accept=".txt" onchange="showFileName(this, 'translatedFileName')">
+        </div>
+
+        <button type="submit">Process Files</button>
+    </form>
+</div>
 
 <script>
+    function showFileName(input, elementId) {
+        const fileNameElement = document.getElementById(elementId);
+        if (input.files.length > 0) {
+            fileNameElement.textContent = input.files[0].name;
+            fileNameElement.style.display = 'block';
+        } else {
+            fileNameElement.style.display = 'none';
+        }
+    }
+
     function validateFiles() {
         const originalFile = document.getElementById('originalFile').files[0];
         const translatedFile = document.getElementById('translatedFile').files[0];
 
         if (!originalFile || !translatedFile) {
-            alert('Будь ласка, виберіть обидва файли');
+            alert('Please select both files');
             return false;
         }
 
         if (originalFile.size === 0 || translatedFile.size === 0) {
-            alert('Файли не повинні бути порожніми');
+            alert('Files cannot be empty');
             return false;
         }
 
