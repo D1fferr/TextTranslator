@@ -1,0 +1,1 @@
+A web application that helps you learn another language by reading texts. To work, you need the original text and its translation. It is necessary that the sentences in the texts correspond to each other. When reading the text, you can click on any sentence, and the translation will appear in a pop-up window.
